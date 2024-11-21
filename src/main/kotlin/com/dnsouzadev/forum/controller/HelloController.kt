@@ -1,4 +1,4 @@
-package com.dnsouzadev.forum
+package com.dnsouzadev.forum.controller
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
