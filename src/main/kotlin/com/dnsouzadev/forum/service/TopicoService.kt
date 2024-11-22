@@ -1,46 +1,16 @@
 package com.dnsouzadev.forum.service
 
+import com.dnsouzadev.forum.dto.NovoTopicoDto
 import com.dnsouzadev.forum.model.Curso
 import com.dnsouzadev.forum.model.Topico
 import com.dnsouzadev.forum.model.Usuario
 import org.springframework.stereotype.Service
 
 @Service
-class TopicoService(private var topicos: List<Topico>) {
-
-    init {
-        val topicos1 = Topico(
-                id = 1,
-                titulo = "Duvida",
-                mensagem = "Duvida com Spring",
-                curso = Curso(
-                    id = 1,
-                    nome = "Spring Boot",
-                    categoria = "Programacao"
-                ),
-                autor = Usuario(
-                    id = 1,
-                    nome = "Douglas",
-                    email = "douglas@gmail.com"
-                )
-            )
-        val topicos2 = Topico(
-                id = 2,
-                titulo = "Duvida",
-                mensagem = "Duvida com Kotlin",
-                curso = Curso(
-                    id = 1,
-                    nome = "Spring Boot",
-                    categoria = "Programacao"
-                ),
-                autor = Usuario(
-                    id = 1,
-                    nome = "Douglas",
-                    email = "douglas@gmail.com"
-                )
-            )
-        topicos = listOf(topicos1, topicos2)
-    }
+class TopicoService(
+    private var topicos: List<Topico> = ArrayList(),
+    private val cursoService: CursoService,
+    private val usuarioService: UsuarioService) {
 
     fun listar(): List<Topico> {
         return topicos
@@ -48,5 +18,15 @@ class TopicoService(private var topicos: List<Topico>) {
 
     fun buscarPorId(id: Long): Topico {
         return topicos.stream().filter { t -> t.id == id }.findFirst().get()
+    }
+
+    fun cadastrar(dto: NovoTopicoDto) {
+        topicos = topicos.plus(Topico(
+            id = topicos.size.toLong() + 1,
+            titulo = dto.titulo,
+            mensagem = dto.mensagem,
+            curso = cursoService.buscarPorId(dto.idCurso),
+            autor = usuarioService.buscarPorId(dto.idAutor)
+        ))
     }
 }
