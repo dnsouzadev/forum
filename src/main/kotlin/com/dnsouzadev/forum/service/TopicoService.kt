@@ -27,6 +27,6 @@ class TopicoService(
     fun cadastrar(dto: NovoTopicoForm) {
         val topico = topicoFormMapper.map(dto)
         topico.id = topicos.size.toLong() + 1
-        topicos = topicos.plus(topicoFormMapper.map(dto))
+        topicos = topicos.plus(topico)
     }
 }
