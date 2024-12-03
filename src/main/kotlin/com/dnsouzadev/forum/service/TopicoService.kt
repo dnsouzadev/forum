@@ -3,6 +3,7 @@ package com.dnsouzadev.forum.service
 import com.dnsouzadev.forum.dto.AtualizacaoTopicoForm
 import com.dnsouzadev.forum.dto.NovoTopicoForm
 import com.dnsouzadev.forum.dto.TopicoView
+import com.dnsouzadev.forum.exception.NotFoundException
 import com.dnsouzadev.forum.mapper.TopicoFormMapper
 import com.dnsouzadev.forum.mapper.TopicoViewMapper
 import com.dnsouzadev.forum.model.Topico
@@ -13,7 +14,8 @@ import java.util.stream.Collectors
 class TopicoService(
     private var topicos: List<Topico> = ArrayList(),
     private val topicoViewMapper: TopicoViewMapper,
-    private val topicoFormMapper: TopicoFormMapper
+    private val topicoFormMapper: TopicoFormMapper,
+    private val notFoundMessage: String = "Topico não encontrado"
 ) {
 
     fun listar(): List<TopicoView> {
@@ -21,7 +23,7 @@ class TopicoService(
     }
 
     fun buscarPorId(id: Long): TopicoView {
-        val topico = topicos.stream().filter { t -> t.id == id }.findFirst().get()
+        val topico = topicos.stream().filter { t -> t.id == id }.findFirst().orElseThrow { NotFoundException(notFoundMessage) }
         return topicoViewMapper.map(topico)
     }
 
@@ -49,7 +51,7 @@ class TopicoService(
     }
 
     fun deletar(id: Long) {
-        val topico = topicos.stream().filter { t -> t.id == id }.findFirst().get()
+        val topico = topicos.stream().filter { t -> t.id == id }.findFirst().orElseThrow { NotFoundException(notFoundMessage) }
         topicos = topicos.minus(topico)
     }
 }
