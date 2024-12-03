@@ -1,5 +1,6 @@
 package com.dnsouzadev.forum.service
 
+import com.dnsouzadev.forum.dto.AtualizacaoTopicoForm
 import com.dnsouzadev.forum.dto.NovoTopicoForm
 import com.dnsouzadev.forum.dto.TopicoView
 import com.dnsouzadev.forum.mapper.TopicoFormMapper
@@ -28,5 +29,19 @@ class TopicoService(
         val topico = topicoFormMapper.map(dto)
         topico.id = topicos.size.toLong() + 1
         topicos = topicos.plus(topico)
+    }
+
+    fun atualizar(dto: AtualizacaoTopicoForm) {
+        val topico = topicos.stream().filter { t -> t.id == dto.id }.findFirst().get()
+        topicos = topicos.minus(topico).plus(Topico(
+            id = dto.id,
+            titulo = dto.titulo,
+            mensagem = dto.mensagem,
+            autor = topico.autor,
+            curso = topico.curso,
+            respostas = topico.respostas,
+            status = topico.status,
+            dataCriacao = topico.dataCriacao
+        ))
     }
 }
